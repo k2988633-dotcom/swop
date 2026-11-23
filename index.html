@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>SWOP — Площадка любых вещей и услуг</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+    body {
+      background-color: #0B0914;
+      color: #FFFFFF;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.35), transparent 45%),
+                        radial-gradient(circle at 15% 75%, rgba(109, 40, 217, 0.2), transparent 40%);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 8%;
+      background: rgba(19, 17, 28, 0.75);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(167, 139, 250, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-size: 24px; font-weight: 900; letter-spacing: 1.5px; color: #fff; }
+    .logo span { color: #A78BFA; }
+    .nav-btns { display: flex; gap: 15px; align-items: center; }
+    .btn-ghost { background: transparent; color: #D1D5DB; border: none; cursor: pointer; font-size: 15px; }
+    .btn-primary {
+      background: linear-gradient(90deg, #7C3AED, #9333EA);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    }
+    .hero { display: flex; justify-content: space-between; align-items: center; padding: 60px 8%; gap: 40px; flex-wrap: wrap; }
+    .hero-left { max-width: 520px; }
+    .hero-left h1 { font-size: 42px; line-height: 1.15; margin-bottom: 15px; }
+    .hero-left p { color: #9CA3AF; font-size: 16px; line-height: 1.6; margin-bottom: 28px; }
+    .hero-actions { display: flex; gap: 15px; }
+    .btn-dark {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .hero-right { display: flex; flex-direction: column; gap: 15px; }
+    .glass-badge {
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      padding: 16px 22px;
+      border-radius: 14px;
+      width: 300px;
+    }
+    .glass-badge h4 { color: #C4B5FD; margin-bottom: 4px; }
+    .glass-badge span { font-size: 13px; color: #9CA3AF; }
+    .catalog { padding: 20px 8% 80px; }
+    .catalog-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+    .search-input {
+      background: rgba(30, 27, 46, 0.8);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: white;
+      padding: 11px 16px;
+      border-radius: 10px;
+      width: 280px;
+      outline: none;
+    }
+    .categories { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+    .cat-btn {
+      background: rgba(30, 27, 46, 0.7);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      color: #D1D5DB;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .cat-btn.active, .cat-btn:hover { background: #7C3AED; color: white; border-color: #8B5CF6; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; }
+    .card {
+      background: rgba(30, 27, 46, 0.65);
+      border: 1px solid rgba(167, 139, 250, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-img { width: 100%; height: 170px; object-fit: cover; background: #191627; }
+    .card-body { padding: 18px; display: flex; flex-direction: column; flex-grow: 1; }
+    .card-tag { align-self: flex-start; background: rgba(139, 92, 246, 0.2); color: #C4B5FD; font-size: 12px; padding: 4px 10px; border-radius: 6px; margin-bottom: 10px; }
+    .card h3 { font-size: 18px; margin-bottom: 8px; }
+    .card p { color: #9CA3AF; font-size: 14px; margin-bottom: 16px; flex-grow: 1; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+    .price { font-size: 18px; font-weight: bold; color: #A78BFA; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 200; }
+    .modal-box { background: #161324; border: 1px solid #4C1D95; padding: 25px; border-radius: 16px; width: 90%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; }
+    .modal-box input, .modal-box textarea, .modal-box select { background: #0B0914; border: 1px solid #2D2844; color: white; padding: 10px; border-radius: 8px; outline: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">SW<span>OP</span></div>
+    <div class="nav-btns">
+      <button class="btn-ghost" onclick="document.getElementById('market').scrollIntoView({behavior:'smooth'})">Каталог</button>
+      <button class="btn-primary" onclick="openModal()">+ Выставить товар</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-left">
+      <h1>Покупай и продавай всё, что угодно</h1>
+      <p>Универсальная площадка для реальных вещей, гаджетов, одежды и игровых предметов. Выставляй объявления бесплатно и общайся напрямую.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('market').scrollIntoView({behavior:'smooth'})">Смотреть каталог</button>
+        <button class="btn-dark" onclick="openModal()">Разместить лот</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="glass-badge"><h4>📦 Любые вещи из жизни</h4><span>От кроссовок и мышек до редких скинов</span></div>
+      <div class="glass-badge"><h4>💬 Связь без посредников</h4><span>Пиши продавцу сразу в Telegram</span></div>
+    </div>
+  </section>
+
+  <section class="catalog" id="market">
+    <div class="catalog-top">
+      <h2>Свежие объявления</h2>
+      <input type="text" class="search-input" id="searchInput" placeholder="Найти вещь..." onkeyup="renderCards()">
+    </div>
+    <div class="categories">
+      <button class="cat-btn active" onclick="setCategory('Все', this)">Все</button>
+      <button class="cat-btn" onclick="setCategory('Электроника', this)">Электроника</button>
+      <button class="cat-btn" onclick="setCategory('Одежда', this)">Одежда</button>
+      <button class="cat-btn" onclick="setCategory('Игры', this)">Игры</button>
+      <button class="cat-btn" onclick="setCategory('Разное', this)">Разное</button>
+    </div>
+    <div class="grid" id="cardsGrid"></div>
+  </section>
+  <div class="modal" id="addModal">
+    <div class="modal-box">
+      <h3>Новое объявление</h3>
+      <input type="text" id="itemTitle" placeholder="Название (например: Наушники Sony)">
+      <select id="itemTag">
+        <option value="Электроника">Электроника</option>
+        <option value="Одежда">Одежда</option>
+        <option value="Игры">Игры</option>
+        <option value="Разное">Разное</option>
+      </select>
+      <label style="font-size:13px; color:#A78BFA;">Выбери фото с компьютера:</label>
+      <input type="file" id="itemFile" accept="image/*">
+      <textarea id="itemDesc" rows="3" placeholder="Состояние и описание"></textarea>
+      <input type="text" id="itemPrice" placeholder="Цена (например: 1 500 грн)">
+      <input type="text" id="itemContact" placeholder="Твой Telegram (@username)">
+      <button class="btn-primary" onclick="addItem()">Опубликовать</button>
+      <button class="btn-dark" onclick="closeModal()">Отмена</button>
+    </div>
+  </div>
+
+  
+  <script>
+    var currentCategory = 'Все';
+    var defaultImg = '';
+    var defaultItems = [
+      { title: 'Механическая клавиатура', tag: 'Электроника', img: '', desc: 'Красная подсветка, тихие свитчи, коробка в комплекте.', price: '1 300 грн', contact: '@tech_seller' },
+      { title: 'Худи тёмно-фиолетовое', tag: 'Одежда', img: '', desc: 'Плотный хлопок, размер L, надевалось пару раз.', price: '850 грн', contact: '@style_shop' },
+      { title: 'Сборка модов + оформление', tag: 'Игры', img: '', desc: 'Настрою клиент под слабый ПК, добавлю шейдеры.', price: '200 грн', contact: '@craft_master' }
+    ];
+
+    var items = [];
+    try {
+      items = JSON.parse(localStorage.getItem('swop_items_v3')) || defaultItems;
+    } catch (e) {
+      items = defaultItems;
+    }
+
+    function renderCards() {
+      var grid = document.getElementById('cardsGrid');
+      var query = document.getElementById('searchInput').value.toLowerCase();
+      grid.innerHTML = '';
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        if ((currentCategory === 'Все' || it.tag === currentCategory) && (it.title.toLowerCase().indexOf(query) !== -1 || it.desc.toLowerCase().indexOf(query) !== -1)) {
+          var card = document.createElement('div');
+          card.className = 'card';
+          var imgBlock = it.img
+            ? '<img class="card-img" src="' + it.img + '">'
+            : '<div class="card-img" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4C1D95,#1E1B4B);color:#C4B5FD;font-weight:bold;">SWOP</div>';
+          card.innerHTML = imgBlock + '<div class="card-body"><span class="card-tag">' + it.tag + '</span><h3>' + it.title + '</h3><p>' + it.desc + '</p><div class="card-footer"><span class="price">' + it.price + '</span><button class="btn-primary" onclick="alert(\'Написать продавцу: ' + it.contact + '\')">Написать</button></div></div>';
+          grid.appendChild(card);
+        }
+      }
+    }
+
+    function setCategory(cat, btn) {
+      currentCategory = cat;
+      var btns = document.querySelectorAll('.cat-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+      btn.classList.add('active');
+      renderCards();
+    }
+
+    function openModal() { document.getElementById('addModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+
+    function saveNewItem(imgData) {
+      items.unshift({
+        title: document.getElementById('itemTitle').value,
+        tag: document.getElementById('itemTag').value,
+        img: imgData,
+        desc: document.getElementById('itemDesc').value,
+        price: document.getElementById('itemPrice').value,
+        contact: document.getElementById('itemContact').value || '@не_указан'
+      });
+      try {
+        localStorage.setItem('swop_items_v3', JSON.stringify(items));
+      } catch (e) {
+        alert('Память браузера переполнена, товар добавлен только до обновления страницы.');
+      }
+      renderCards();
+      closeModal();
+    }
+
+    function addItem() {
+      var title = document.getElementById('itemTitle').value;
+      var price = document.getElementById('itemPrice').value;
+      if (!title || !price) { alert('Укажи название и цену!'); return; }
+
+      var fileInput = document.getElementById('itemFile');
+      var file = fileInput.files ? fileInput.files.item(0) : null;
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var image = new Image();
+          image.onload = function() {
+            var canvas = document.createElement('canvas');
+            var maxW = 500;
+            var scale = maxW / image.width;
+            canvas.width = maxW;
+            canvas.height = image.height * scale;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            saveNewItem(canvas.toDataURL('image/jpeg', 0.7));
+          };
+          image.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        saveNewItem('');
+      }
+    }
+
+    renderCards();
+  </script>
+</body>
+</html>
